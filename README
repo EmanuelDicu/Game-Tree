@@ -1,0 +1,52 @@
+Tema are ca scop implementarea unor concepte (arborele de joc, arborele si/sau, algoritmul minimax)
+necesare pentru analizarea tuturor starilor de joc ale jocului X si 0, precum si gasirea unei 
+strategii optime de rezolvare a acestuia.
+
+Enuntul complet, precum si modul de utilizare se gasesc in fisierul "Tema2SD.pdf"
+
+Ideea din spatele algoritmului:
+
+i) Pentru taskurile 1 si 2:
+        Citesc starea initiala si construiesc plecand de la ea arborele de joc exact cum este 
+    descris in enunt (fiecarei stari posibile de joc ii corespunde un nod care are ca fii toate 
+    starile in care pot ajunge dintr-o singura mutare).
+    Sa presupunem ca joc cu X:
+    Pentru taskul 2 folosesc un dfs ca sa aplic de jos in sus algoritmul SI/SAU astfel:
+        - nodurilor terminale (frunzelor) le pot calcula foarte usor starea de 
+    castig/pierdere cautand 3 de X pe linie/coloana/diagonala (caz in care starea este de castig, 
+    altfel starea fiind de pierdere).
+        - cand ma intorc din recursivitate, daca starea curenta este o stare in care eu ma aflu
+    la mutare, caut o stare succesoare (un fiu) de castig si daca gasesc, atunci starea curenta
+    este tot de castig, altfel este de pierdere. Daca starea in care ma aflu este o stare in
+    care oponentul este la mutare, atunci aceasta este o stare de castig pentru mine doar daca
+    toate starile in care poate muta oponentul sunt stari de castig pentru mine, altfel este o
+    stare de pierdere
+ii) Pentru taskul 3:
+        Citesc si procesez fisierul de intrare construind arborele minimax, pe care aplic dupa 
+    algoritmul minimax in functie de nivel cu un dfs astfel:
+        - nodurile terminale (frunzele) au deja valoarea minimaxa data, nu trebuie facut nimic aici
+        - la intoarcerea din recursivitate, pentru calcularea valorii minimax unui nod intern
+    arbitrar, daca acesta se afla pe un nivel impar in arbore (nivel max) in arbore, atunci 
+    valoarea minimax a nodului curent este egala cu maximul valorilor minimax corespunzatoare
+    fiilor, altfel ma aflu pe un nivel par (nivel min) si implicit valoarea minimax a nodului 
+    curent este egala cu minimul valorilor minimax corespunzatoare fiilor nodului curent.
+
+Constructia arborelui pentru taskurile 1 si 2 este straight-forward.
+Pentru taskul 3, am construit arborele pe niveluri folosind o coada astfel:
+- adaug radacina arborelui in coada
+- cat timp am noduri din arbore de procesat (cat timp coada este nevida)
+    - extrag primul nod din coada pentru a il procesa
+    - daca nodul extras este de tip frunza, atunci ii initializez valoarea minimax cu numarul dintre
+        paranteze
+    - daca nodul extras este nod intern, atunci numarul dintre paranteze reprezinta cati fii are
+        acest nod de fapt. Asadar, ii creez toti acesti fii, pe care ii adaug in coada pentru a
+        fi procesati ulterior.
+
+Structurarea fisierelor: fisierul cu functia main este minimax.c in care deschid si inchid 
+fisierele de intrare si in functie de argumente, rezolv taskul 1, 2 sau 3. Am implementat fiecare
+task intr-un fisier sursa separat (task1.c, task2.c sau task3.c). Taskurile 1 si 2 se folosesc de
+un fisier sursa utilitar aditional (utility12.c) care contine diferite functii comune celor 2
+taskuri si care sunt utile pentru rezolvarea lor. Similar, taskul 3 se foloseste de un fisier 
+utilitar utility3.c in care se afla diferite functii utilitare (de exemplu coada pentru 
+constructia arborelui minimax).
+
